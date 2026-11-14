@@ -4,13 +4,23 @@ from twilio.rest import Client
 import json
 import os
 import tempfile
+import shutil
+from utils.dashboard import initialize, configured_mode, set_mode, save_detection
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024
+app.config["ALERTA_KEY"] = os.environ.get("ALERTA_KEY")
+initialize(app)
 
-# Usar /tmp para evitar problemas de persistencia en Railway
-TMP_DIR = tempfile.gettempdir()
+# Estado en la carpeta de datos o en el volumen conectado a Railway.
+TMP_DIR = str(app.config["MONITOR_DATA_DIR"])
 USUARIOS_FILE = os.path.join(TMP_DIR, "usuarios.json")
 ESTADOS_FILE = os.path.join(TMP_DIR, "estados.json")
+for name in ("usuarios.json", "estados.json"):
+    old_path = os.path.join(tempfile.gettempdir(), name)
+    new_path = os.path.join(TMP_DIR, name)
+    if os.path.exists(old_path) and not os.path.exists(new_path):
+        shutil.copyfile(old_path, new_path)
 
 # Variables de entorno esperadas
 TWILIO_ACCOUNT_SID = os.environ.get("TWILIO_ACCOUNT_SID")
@@ -94,12 +104,14 @@ def whatsapp_reply():
     if incoming_msg in ["1", "tortugas"]:
         estados[from_number] = "tortugas"
         guardar_json(ESTADOS_FILE, estados)
+        set_mode("tortugas")
         msg.body("Has elegido 🐢 *Tortugas*. El sistema iniciará la detección.")
         return str(resp)
 
     if incoming_msg in ["2", "gaviotines"]:
         estados[from_number] = "gaviotines"
         guardar_json(ESTADOS_FILE, estados)
+        set_mode("gaviotines")
         msg.body("Has elegido 🐦 *Gaviotines*. El sistema iniciará la detección.")
         return str(resp)
 
@@ -113,7 +125,7 @@ def obtener_configuracion():
     Devuelve {"mode": "tortugas"} por ejemplo.
     """
     estados = cargar_json(ESTADOS_FILE)
-    mode = list(estados.values())[-1] if estados else "tortugas"
+    mode = configured_mode() or (list(estados.values())[-1] if estados else "tortugas")
     return jsonify({"mode": mode})
 
 @app.route("/alerta", methods=["POST"])
@@ -135,6 +147,11 @@ def recibir_alerta():
     except Exception as e:
         app.logger.error(f"Error parsing JSON en /alerta: {e}")
         return jsonify({"error": "bad request"}), 400
+
+    try:
+        save_detection(data)
+    except ValueError as error:
+        app.logger.warning("Alerta sin registro en el dashboard: %s", error)
     
     usuarios = cargar_json(USUARIOS_FILE)
     if not usuarios:

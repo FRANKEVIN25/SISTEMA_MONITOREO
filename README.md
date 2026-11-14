@@ -54,6 +54,8 @@ The problem: hatching happens unpredictably, often at night, and volunteers can'
 
 ## Running it
 
+El [dashboard propio con cámara de PC](docs/DASHBOARD.md) se abre en la raíz del backend. Incluye conteos, capturas, historial y control de especie.
+
 Para retomar la integración iniciada el 13 de noviembre de 2026 desde otra computadora, consultar [Continuar en la laptop](docs/CONTINUAR_EN_LAPTOP.md). Incluye el estado comprobado, las conexiones pendientes y los pasos para recuperar el entorno.
 
 **Backend (Railway or local):**

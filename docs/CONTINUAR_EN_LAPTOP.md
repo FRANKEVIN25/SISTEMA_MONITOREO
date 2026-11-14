@@ -2,6 +2,12 @@
 
 Actualizado el 13 de noviembre de 2026, hora de Perú.
 
+## Actualización del dashboard propio
+
+El usuario eligió crear una página web propia integrada con Railway. La implementación está en `/` y `/dashboard`, con control de especie, última imagen de la cámara, conteos e historial SQLite. El monitor para PC es `python -m src.monitor_pc`. La instalación y conexión están en [Dashboard y cámara de PC](DASHBOARD.md).
+
+La cámara de esta PC entregó imágenes de 640 × 480. Ambos modelos cargaron y ejecutaron inferencia. El agente transmitió una captura al backend local y se verificó su respuesta HTTP. La recepción de una detección real de fauna, la publicación de esta versión en el servicio correcto de Railway y el volumen remoto requieren completar la integración.
+
 ## Punto donde quedó la sesión
 
 El usuario terminó de configurar las cuatro variables del servicio Railway y confirmó que estaban listas. El siguiente paso pendiente es esperar el despliegue activo, enviar `menu` desde el teléfono al Sandbox correcto y revisar el resultado. Todavía falta confirmar que el menú llegue realmente a WhatsApp.
