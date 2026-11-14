@@ -86,36 +86,30 @@ El menú se devuelve como respuesta TwiML al webhook entrante. Las alertas autom
 
 La diferencia se resolvió al confirmar que Railway utiliza el repositorio de Abi. Se integró el dashboard sobre su propio `app.py`, conservando las cinco opciones del menú, la selección entre usuarios y las respuestas de alertas. La opción 5 enlaza al dominio del dashboard. El agente PC admite tortugas, gaviotines y espera. La opción Amenazas del bot sigue disponible, con su integración al agente PC pendiente.
 
-El commit de integración en Abi es `2512a21`. La actualización del servicio requiere Deploy Latest Commit. La publicación y el volumen remoto se verifican desde Railway. Los párrafos siguientes documentan el diagnóstico anterior.
-
-El endpoint público probado devolvió un menú ÑAWI APU con cinco opciones, incluidas amenazas, detener y dashboard. También devolvió `mode=detenido`.
-
-La copia local revisada y la rama remota `main` consultada durante la preparación estaban en el commit `ef26259`. Su código presenta un menú más simple y el detector intenta cargar un archivo de modelo según el modo recibido. Esta diferencia requiere identificar el repositorio, la rama y el commit que realmente despliega Railway antes de cambiar código o forzar un redespliegue.
-
-En Railway → Settings → Source, anotar el propietario y repositorio conectado, la rama y el commit del último deployment. Compararlos con `FRANKEVIN25/SISTEMA_MONITOREO`, rama `main`. Publicar documentación en este repositorio puede iniciar un despliegue si Railway tiene activado el despliegue automático.
-
-Antes de iniciar el detector, comprobar cómo maneja la versión efectiva el estado `detenido`. La copia local revisada intentaría cargar `modelos/detenido.pt`, que no está entre los dos modelos disponibles. Seleccionar una especie y confirmar el modo devuelto forma parte de la prueba pendiente.
+El commit de integración en Abi es `2512a21`. La actualización del servicio requiere Deploy Latest Commit. La publicación y el volumen remoto se verifican desde Railway. El nuevo agente `src.monitor_pc` maneja `detenido` como espera y libera la cámara al finalizar.
 
 ## Preparar la laptop
 
 Para usar las consolas de Railway, Twilio y Grafana basta el navegador. Para editar o ejecutar el backend local, instalar Git y Python y clonar el repositorio.
 
 ```powershell
-git clone https://github.com/FRANKEVIN25/SISTEMA_MONITOREO.git
-cd SISTEMA_MONITOREO
+git clone https://github.com/Emmy-Abigail/SISTEMA_MONITOREO.git SISTEMA_MONITOREO-ABI
+cd SISTEMA_MONITOREO-ABI
 ```
 
-Si ya existe una copia local sin cambios pendientes, actualizarla desde su carpeta.
+Si ya existe una copia del repositorio de Abi sin cambios pendientes, actualizarla desde su carpeta. Comprobar primero el remoto.
 
 ```powershell
+git remote -v
 git pull --ff-only origin main
 ```
 
-Abrir primero `docs/CONTINUAR_EN_LAPTOP.md` en VS Code. Para preparar el backend local, ejecutar lo siguiente.
+Abrir `docs/DASHBOARD.md` de Abi en VS Code. Para preparar la cámara y el backend local, ejecutar lo siguiente.
 
 ```powershell
 python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+.\.venv\Scripts\python.exe -m pip install -r requirements_pc.txt
 .\.venv\Scripts\python.exe -m flask --app app run --host 127.0.0.1 --port 5000
 ```
 
@@ -134,7 +128,9 @@ En esta PC se instalaron las dependencias del backend y `pip check` no reportó 
 7. Ejecutar desde la raíz con `python -m src.detector`, en una sesión gráfica compatible con OpenCV.
 8. Confirmar una detección, una subida de imagen y la recepción del WhatsApp con fotografía.
 
-## Próxima sesión con Grafana
+## Referencia del dashboard anterior en Grafana
+
+El usuario eligió continuar con el dashboard web propio. Los pasos siguientes quedan como referencia para recuperar el dashboard antiguo si se necesita.
 
 1. Entrar en https://frankjauregui.grafana.net.
 2. Abrir Connections → Data sources y anotar tipo, nombre y destino de la fuente que usan los paneles. Mantener privadas sus credenciales.
@@ -153,9 +149,10 @@ En esta PC se instalaron las dependencias del backend y `pip check` no reportó 
 ```text
 Continuemos la integración de SISTEMA_MONITOREO. Lee primero
 docs/CONTINUAR_EN_LAPTOP.md y las instrucciones AGENTS.md que correspondan.
-Las variables de Railway ya fueron completadas por mí. Falta verificar que
-WhatsApp reciba el menú. El último error observado fue Twilio 11321.
-Comprueba la fuente real desplegada en Railway porque el menú público y
-el modo detenido difieren de la copia del código revisada. Después hay que
-conectar Raspberry, fotografías en mi GitHub y la fuente existente de Grafana.
+La fuente confirmada de Railway es Emmy-Abigail/SISTEMA_MONITOREO, main.
+El dashboard propio ya se integró allí en el commit 2512a21 y pasaron ocho
+pruebas. Falta activar Deploy Latest Commit, confirmar la página pública,
+conectar un volumen y ejecutar el monitor PC con la clave del backend.
+Las variables de Railway ya fueron completadas por mí. También falta
+confirmar que WhatsApp reciba el menú. El último error observado fue 11321.
 ```
