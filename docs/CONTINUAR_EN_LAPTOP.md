@@ -4,6 +4,8 @@ Actualizado el 13 de noviembre de 2026, hora de Perú.
 
 ## Actualización del dashboard propio
 
+La fuente de Railway fue confirmada mediante su pantalla Settings → Source. Debe seguir conectada a **`Emmy-Abigail/SISTEMA_MONITOREO`, rama `main`**. El dashboard ya se integró allí en el commit `2512a21`, conservando el menú ÑAWI APU. Las ocho pruebas de esa integración pasaron. En Railway se debe ejecutar Ctrl+K → Deploy Latest Commit y verificar ese commit. El repositorio de Frank conserva esta documentación y la primera implementación local.
+
 El usuario eligió crear una página web propia integrada con Railway. La implementación está en `/` y `/dashboard`, con control de especie, última imagen de la cámara, conteos e historial SQLite. El monitor para PC es `python -m src.monitor_pc`. La instalación y conexión están en [Dashboard y cámara de PC](DASHBOARD.md).
 
 La cámara de esta PC entregó imágenes de 640 × 480. Ambos modelos cargaron y ejecutaron inferencia. El agente transmitió una captura al backend local y se verificó su respuesta HTTP. La recepción de una detección real de fauna, la publicación de esta versión en el servicio correcto de Railway y el volumen remoto requieren completar la integración.
@@ -16,7 +18,8 @@ El usuario terminó de configurar las cuatro variables del servicio Railway y co
 
 | Recurso | Dirección o dato |
 |---|---|
-| Repositorio de trabajo | https://github.com/FRANKEVIN25/SISTEMA_MONITOREO |
+| Repositorio conectado a Railway | https://github.com/Emmy-Abigail/SISTEMA_MONITOREO |
+| Repositorio de documentación y copia local inicial | https://github.com/FRANKEVIN25/SISTEMA_MONITOREO |
 | Rama de trabajo | `main` |
 | Proyecto Railway visto en la sesión | `intuitive-celebration` |
 | Entorno y servicio | `production` / `SISTEMA_MONITOREO` |
@@ -79,7 +82,11 @@ El teléfono ya se afilió al Sandbox. Si la afiliación vence, abrir su pestañ
 
 El menú se devuelve como respuesta TwiML al webhook entrante. Las alertas automáticas llaman a la API REST y necesitan las credenciales Twilio configuradas en el backend.
 
-## Diferencia entre el despliegue y esta copia del código
+## Fuente confirmada del despliegue
+
+La diferencia se resolvió al confirmar que Railway utiliza el repositorio de Abi. Se integró el dashboard sobre su propio `app.py`, conservando las cinco opciones del menú, la selección entre usuarios y las respuestas de alertas. La opción 5 enlaza al dominio del dashboard. El agente PC admite tortugas, gaviotines y espera. La opción Amenazas del bot sigue disponible, con su integración al agente PC pendiente.
+
+El commit de integración en Abi es `2512a21`. La actualización del servicio requiere Deploy Latest Commit. La publicación y el volumen remoto se verifican desde Railway. Los párrafos siguientes documentan el diagnóstico anterior.
 
 El endpoint público probado devolvió un menú ÑAWI APU con cinco opciones, incluidas amenazas, detener y dashboard. También devolvió `mode=detenido`.
 
